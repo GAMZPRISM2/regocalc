@@ -4,18 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rego Price Calculator</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Body and container styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Result section */
+        #result {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Rego Price Calculator</h1>
-    <form id="regoForm">
-        <label for="manualWeight">Enter Vehicle Weight (kg):</label>
-        <input type="number" id="manualWeight" min="0" required>
+    <div class="container">
+        <h1>Rego Price Calculator</h1>
+        <form id="regoForm">
+            <label for="manualWeight">Enter Vehicle Weight (kg):</label>
+            <input type="number" id="manualWeight" min="0" required>
+            
+            <button type="submit">Calculate Rego</button>
+        </form>
         
-        <button type="submit">Calculate Rego</button>
-    </form>
-    
-    <div id="result"></div>
+        <div id="result"></div>
+    </div>
 
-    <script src="app.js"></script>
+    <script>
+        document.getElementById('regoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const manualWeightInput = document.getElementById('manualWeight').value;
+            const resultDiv = document.getElementById('result');
+            
+            const weight = parseFloat(manualWeightInput);
+
+            if (!isNaN(weight) && weight > 0) {
+                const licenseFee = (weight / 100) * 27.56;
+                const totalRegoPrice = licenseFee + 491.40 + 8.25;
+
+                resultDiv.innerHTML = `
+                    <h2>Rego Price Calculation</h2>
+                    <p>Vehicle Weight: ${weight} kg</p>
+                    <p>License Fee: $${licenseFee.toFixed(2)}</p>
+                    <p>Additional Fees: $499.65</p>
+                    <h3>Total Rego Price: $${totalRegoPrice.toFixed(2)}</h3>
+                `;
+            } else {
+                resultDiv.innerHTML = "<p class='error'>Please enter a valid weight.</p>";
+            }
+        });
+    </script>
 </body>
 </html>
