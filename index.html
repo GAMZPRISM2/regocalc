@@ -51,7 +51,7 @@
             color: #333;
         }
 
-        input[type="number"] {
+        input[type="number"], select {
             padding: 12px;
             font-size: 1rem;
             border: 2px solid #ccc;
@@ -59,7 +59,7 @@
             transition: border-color 0.3s;
         }
 
-        input[type="number"]:focus {
+        input[type="number"]:focus, select:focus {
             border-color: #4CAF50;
             outline: none;
         }
@@ -117,6 +117,13 @@
             <label for="manualWeight">Enter Vehicle Weight (kg):</label>
             <input type="number" id="manualWeight" min="0" required>
             
+            <label for="duration">Select Duration:</label>
+            <select id="duration" required>
+                <option value="3">3 Months</option>
+                <option value="6">6 Months</option>
+                <option value="12">12 Months (Yearly)</option>
+            </select>
+
             <button type="submit">Calculate Rego</button>
         </form>
         
@@ -128,19 +135,35 @@
             e.preventDefault();
 
             const manualWeightInput = document.getElementById('manualWeight').value;
+            const durationInput = document.getElementById('duration').value;
             const resultDiv = document.getElementById('result');
             
             const weight = parseFloat(manualWeightInput);
+            const duration = parseInt(durationInput);
 
             if (!isNaN(weight) && weight > 0) {
                 const licenseFee = (weight / 100) * 27.56;
-                const totalRegoPrice = licenseFee + 491.40 + 8.25;
+                const additionalFees = 491.40 + 8.25;
+                let totalRegoPrice;
+
+                switch (duration) {
+                    case 3:
+                        totalRegoPrice = (licenseFee + additionalFees) * 0.25;
+                        break;
+                    case 6:
+                        totalRegoPrice = (licenseFee + additionalFees) * 0.5;
+                        break;
+                    case 12:
+                        totalRegoPrice = licenseFee + additionalFees;
+                        break;
+                }
 
                 resultDiv.innerHTML = `
                     <h2>Rego Price Calculation</h2>
                     <p>Vehicle Weight: ${weight} kg</p>
                     <p>License Fee: $${licenseFee.toFixed(2)}</p>
                     <p>Additional Fees: $499.65</p>
+                    <p>Duration: ${duration} Months</p>
                     <h3>Total Rego Price: $${totalRegoPrice.toFixed(2)}</h3>
                 `;
             } else {
