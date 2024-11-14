@@ -143,28 +143,37 @@
 
             if (!isNaN(weight) && weight > 0) {
                 const licenseFee = (weight / 100) * 27.56;
-                const additionalFees = 491.40 + 8.25;
-                let totalRegoPrice;
-
+                const adminFee = 8.25;
+                const miiFee = 491.40; // MII cost for 12 months
+                let flatFee;
+                
+                // Determine the flat fee and prorated MII fee based on the duration
                 switch (duration) {
                     case 3:
-                        totalRegoPrice = (licenseFee + additionalFees) * 0.25;
+                        flatFee = 3.30;
+                        totalMiiFee = miiFee * 0.25;
                         break;
                     case 6:
-                        totalRegoPrice = (licenseFee + additionalFees) * 0.5;
+                        flatFee = 6.60;
+                        totalMiiFee = miiFee * 0.5;
                         break;
                     case 12:
-                        totalRegoPrice = licenseFee + additionalFees;
+                        flatFee = 6.60 * 0.5;
+                        totalMiiFee = miiFee;
                         break;
                 }
+
+                const totalLicenseFee = licenseFee + flatFee;
+                const totalRegoPrice = totalLicenseFee + totalMiiFee + adminFee;
 
                 resultDiv.innerHTML = `
                     <h2>Rego Price Calculation</h2>
                     <p>Vehicle Weight: ${weight} kg</p>
-                    <p>License Fee: $${licenseFee.toFixed(2)}</p>
-                    <p>Additional Fees: $499.65</p>
-                    <p>Duration: ${duration} Months</p>
-                    <h3>Total Rego Price: $${totalRegoPrice.toFixed(2)}</h3>
+                    <p>License Fee (based on weight): $${licenseFee.toFixed(2)}</p>
+                    <p>Prescribed Flat Fee: $${flatFee.toFixed(2)}</p>
+                    <p>Motor Injury Insurance (MII): $${totalMiiFee.toFixed(2)}</p>
+                    <p>Administration Fee: $${adminFee.toFixed(2)}</p>
+                    <h3>Total Rego Price (${duration} Months): $${totalRegoPrice.toFixed(2)}</h3>
                 `;
             } else {
                 resultDiv.innerHTML = "<p class='error'>Please enter a valid weight.</p>";
